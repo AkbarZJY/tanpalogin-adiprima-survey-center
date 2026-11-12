@@ -199,5 +199,38 @@ class AdminOnlyAuthTest extends TestCase
             'outsourcing_company' => null,
         ]);
     }
+
+    public function test_survey_form_demographics_have_no_prefilled_defaults(): void
+    {
+        $survey = $this->createActiveSurvey();
+
+        $adminWithProfile = User::create([
+            'username' => 'admin_profile',
+            'name' => 'Admin Terisi Otomatis',
+            'password' => Hash::make('password'),
+            'role' => 'admin',
+            'gender' => 'Laki-laki',
+            'age' => 35,
+            'education' => 'S1',
+            'employment_status' => 'Tetap',
+            'tenure' => '1 - 5 tahun',
+            'department' => 'IT',
+            'position' => 'Manager',
+        ]);
+
+        $response = $this->actingAs($adminWithProfile)
+            ->get(route('survey.form', $survey->slug));
+
+        $response->assertStatus(200);
+        $response->assertSee('-- Pilih Jenis Kelamin --');
+        $response->assertSee('-- Pilih Pendidikan Terakhir --');
+        $response->assertSee('-- Pilih Status Kepegawaian --');
+        $response->assertSee('-- Pilih Lama Bekerja --');
+        $response->assertSee('-- Pilih Departemen --');
+        $response->assertSee('-- Pilih Jabatan --');
+        $response->assertDontSee('value="Admin Terisi Otomatis"', false);
+        $response->assertDontSee('value="35"', false);
+        $response->assertDontSee('value="28"', false);
+    }
 }
 

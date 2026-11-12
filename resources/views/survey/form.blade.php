@@ -526,33 +526,35 @@
         <div class="form-card step-panel" id="step2" style="display: none;">
             <div style="margin-bottom: 1.5rem;">
                 <h2 style="font-size: 1.25rem; font-weight: 800; color: #0F172A; margin-bottom: 0.25rem;">Bagian A. Identitas Responden</h2>
-                <p style="color: #64748B; font-size: 0.85rem;">Periksa kembali kesesuaian data demografi Anda sebelum melanjutkan.</p>
+                <p style="color: #64748B; font-size: 0.85rem;">Silakan lengkapi data diri Anda dengan benar sebelum melanjutkan.</p>
             </div>
 
             <div class="demographics-grid">
                 <div class="form-group-item">
                     <label>1. Nama Lengkap *</label>
-                    <input type="text" name="name" value="{{ old('name', $user->name ?? '') }}" required>
+                    <input type="text" name="name" value="{{ old('name') }}" placeholder="Masukkan nama lengkap Anda" required>
                 </div>
 
                 <div class="form-group-item">
                     <label>2. Jenis Kelamin *</label>
                     <select name="gender" id="gender" onchange="evaluateQuestionEligibility()" required>
-                        <option value="Laki-laki" {{ (old('gender', $user->gender ?? '') == 'Laki-laki') ? 'selected' : '' }}>1. Laki-laki</option>
-                        <option value="Perempuan" {{ (old('gender', $user->gender ?? '') == 'Perempuan') ? 'selected' : '' }}>2. Perempuan</option>
+                        <option value="">-- Pilih Jenis Kelamin --</option>
+                        <option value="Laki-laki" {{ old('gender') == 'Laki-laki' ? 'selected' : '' }}>1. Laki-laki</option>
+                        <option value="Perempuan" {{ old('gender') == 'Perempuan' ? 'selected' : '' }}>2. Perempuan</option>
                     </select>
                 </div>
 
                 <div class="form-group-item">
                     <label>3. Usia (Tahun) *</label>
-                    <input type="number" name="age" value="{{ old('age', $user->age ?? 28) }}" min="17" max="80" required>
+                    <input type="number" name="age" value="{{ old('age') }}" placeholder="Masukkan usia Anda (tahun)" min="17" max="80" required>
                 </div>
 
                 <div class="form-group-item">
                     <label>4. Pendidikan Terakhir *</label>
                     <select name="education" required>
+                        <option value="">-- Pilih Pendidikan Terakhir --</option>
                         @foreach($educations as $index => $edu)
-                            <option value="{{ $edu }}" {{ (old('education', $user->education ?? '') == $edu) ? 'selected' : '' }}>{{ $index + 1 }}. {{ $edu }}</option>
+                            <option value="{{ $edu }}" {{ old('education') == $edu ? 'selected' : '' }}>{{ $index + 1 }}. {{ $edu }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -560,9 +562,10 @@
                 <div class="form-group-item">
                     <label>5. Status Kepegawaian *</label>
                     <select name="employment_status" id="employment_status" onchange="handleEmploymentStatusChange()" required>
-                        <option value="Tetap" {{ (old('employment_status', $user->employment_status ?? '') == 'Tetap') ? 'selected' : '' }}>1. Tetap</option>
-                        <option value="Kontrak" {{ (old('employment_status', $user->employment_status ?? '') == 'Kontrak') ? 'selected' : '' }}>2. Kontrak</option>
-                        <option value="Outsourcing" {{ (old('employment_status', $user->employment_status ?? '') == 'Outsourcing') ? 'selected' : '' }}>3. Outsourcing</option>
+                        <option value="">-- Pilih Status Kepegawaian --</option>
+                        <option value="Tetap" {{ old('employment_status') == 'Tetap' ? 'selected' : '' }}>1. Tetap</option>
+                        <option value="Kontrak" {{ old('employment_status') == 'Kontrak' ? 'selected' : '' }}>2. Kontrak</option>
+                        <option value="Outsourcing" {{ old('employment_status') == 'Outsourcing' ? 'selected' : '' }}>3. Outsourcing</option>
                     </select>
                 </div>
 
@@ -579,8 +582,9 @@
                 <div class="form-group-item">
                     <label>6. Lama Bekerja *</label>
                     <select name="tenure" required>
+                        <option value="">-- Pilih Lama Bekerja --</option>
                         @foreach($tenures as $index => $ten)
-                            <option value="{{ $ten }}" {{ (old('tenure', $user->tenure ?? '') == $ten) ? 'selected' : '' }}>{{ $index + 1 }}. {{ $ten }}</option>
+                            <option value="{{ $ten }}" {{ old('tenure') == $ten ? 'selected' : '' }}>{{ $index + 1 }}. {{ $ten }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -588,8 +592,9 @@
                 <div class="form-group-item">
                     <label>7. Departemen *</label>
                     <select name="department" required>
+                        <option value="">-- Pilih Departemen --</option>
                         @foreach($departments as $index => $dept)
-                            <option value="{{ $dept }}" {{ (old('department', $user->department ?? '') == $dept) ? 'selected' : '' }}>{{ $index + 1 }}. {{ $dept }}</option>
+                            <option value="{{ $dept }}" {{ old('department') == $dept ? 'selected' : '' }}>{{ $index + 1 }}. {{ $dept }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -597,8 +602,9 @@
                 <div class="form-group-item">
                     <label>8. Jabatan *</label>
                     <select name="position" id="position" onchange="evaluateQuestionEligibility()" required>
+                        <option value="">-- Pilih Jabatan --</option>
                         @foreach($positions as $index => $pos)
-                            <option value="{{ $pos }}" {{ (old('position', $user->position ?? '') == $pos) ? 'selected' : '' }}>{{ $index + 1 }}. {{ $pos }}</option>
+                            <option value="{{ $pos }}" {{ old('position') == $pos ? 'selected' : '' }}>{{ $index + 1 }}. {{ $pos }}</option>
                         @endforeach
                     </select>
                 </div>
