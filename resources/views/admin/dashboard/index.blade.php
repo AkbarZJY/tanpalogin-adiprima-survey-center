@@ -433,6 +433,220 @@
         color: #92400E;
         border-color: #FDE68A;
     }
+
+    /* Filter Analisa Dimensi (Dropdown Checkbox) */
+    .analisa-filter-card {
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 16px;
+        padding: 1.15rem 1.4rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);
+        margin-bottom: 1.5rem;
+        position: relative;
+        z-index: 30;
+    }
+
+    .analisa-filter-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-bottom: 0.9rem;
+    }
+
+    .analisa-filter-bar {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+        gap: 0.75rem;
+        align-items: end;
+    }
+
+    .cb-dropdown {
+        position: relative;
+        min-width: 0;
+    }
+
+    .cb-dropdown-label {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #475569;
+        margin-bottom: 0.35rem;
+    }
+
+    .cb-dropdown-trigger {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+        padding: 0.58rem 0.85rem;
+        background: #F8FAFC;
+        border: 1px solid #CBD5E1;
+        border-radius: 10px;
+        font-size: 0.835rem;
+        font-weight: 600;
+        color: #1E293B;
+        cursor: pointer;
+        text-align: left;
+        transition: all 0.15s ease;
+    }
+
+    .cb-dropdown-trigger:hover,
+    .cb-dropdown.open .cb-dropdown-trigger {
+        background: #FFFFFF;
+        border-color: var(--color-navy-primary);
+        box-shadow: 0 0 0 3px rgba(12, 43, 100, 0.08);
+    }
+
+    .cb-dropdown-trigger.has-selection {
+        background: #EFF6FF;
+        border-color: #93C5FD;
+        color: var(--color-navy-primary);
+        font-weight: 700;
+    }
+
+    .cb-dropdown-text {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        flex: 1;
+    }
+
+    .cb-dropdown-chevron {
+        font-size: 0.75rem;
+        color: #64748B;
+        transition: transform 0.15s ease;
+        flex-shrink: 0;
+    }
+
+    .cb-dropdown.open .cb-dropdown-chevron {
+        transform: rotate(180deg);
+        color: var(--color-navy-primary);
+    }
+
+    .cb-dropdown-menu {
+        display: none;
+        position: absolute;
+        top: calc(100% + 6px);
+        left: 0;
+        width: 100%;
+        min-width: 220px;
+        background: #FFFFFF;
+        border: 1px solid #CBD5E1;
+        border-radius: 12px;
+        box-shadow: 0 12px 28px -6px rgba(15, 23, 42, 0.18);
+        z-index: 60;
+        overflow: hidden;
+    }
+
+    .cb-dropdown.open .cb-dropdown-menu {
+        display: block;
+    }
+
+    .cb-dropdown-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+        padding: 0.6rem 0.85rem;
+        background: #F8FAFC;
+        border-bottom: 1px solid #E2E8F0;
+    }
+
+    .filter-select-all-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: var(--color-navy-primary);
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .cb-clear-btn {
+        background: transparent;
+        border: none;
+        padding: 0;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #64748B;
+        cursor: pointer;
+    }
+
+    .cb-clear-btn:hover {
+        color: #DC2626;
+    }
+
+    .cb-dropdown-list {
+        max-height: 240px;
+        overflow-y: auto;
+        padding: 0.35rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.15rem;
+    }
+
+    .cb-dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+        padding: 0.45rem 0.6rem;
+        border-radius: 8px;
+        font-size: 0.825rem;
+        font-weight: 500;
+        color: #334155;
+        cursor: pointer;
+        user-select: none;
+        transition: background 0.12s ease;
+    }
+
+    .cb-dropdown-item:hover {
+        background: #F1F5F9;
+    }
+
+    .cb-dropdown-item:has(input:checked) {
+        background: #EFF6FF;
+        color: var(--color-navy-primary);
+        font-weight: 700;
+    }
+
+    .cb-dropdown-item input[type="checkbox"],
+    .filter-select-all-label input[type="checkbox"] {
+        accent-color: var(--color-navy-primary);
+        width: 15px;
+        height: 15px;
+        cursor: pointer;
+        flex-shrink: 0;
+        margin: 0;
+    }
+
+    .analisa-filter-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    @media (max-width: 992px) {
+        .analisa-filter-bar {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .analisa-filter-actions {
+            grid-column: 1 / -1;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .analisa-filter-card {
+            padding: 1rem;
+        }
+        .analisa-filter-bar {
+            grid-template-columns: 1fr;
+        }
+    }
 </style>
 @endsection
 
@@ -827,6 +1041,12 @@
                     </tr>
                     @endforeach
                 </tbody>
+                <tfoot style="background: #F8FAFC; border-top: 2px solid #CBD5E1;">
+                    <tr>
+                        <td style="font-weight: 800; color: #0F172A;">Total Responden Masuk</td>
+                        <td style="text-align: center; font-weight: 800; color: var(--color-navy-primary);">{{ $totalFilled }}</td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>
@@ -834,6 +1054,133 @@
 
     <!-- SUBMENU 3: ANALISA DIMENSI (GRAFIK) -->
     @if($tab == 'analisa')
+    @php
+        $hasAnalisaFilter = !empty($analisaDepartments) || !empty($analisaEmploymentStatuses) || !empty($analisaPositions);
+        $analisaFilterGroups = [
+            [
+                'key' => 'dept',
+                'label' => '1. Departemen',
+                'defaultText' => 'Semua Departemen',
+                'inputName' => 'analisa_departments[]',
+                'options' => $allDepartments,
+                'selected' => $analisaDepartments,
+            ],
+            [
+                'key' => 'emp',
+                'label' => '2. Status Kepegawaian',
+                'defaultText' => 'Semua Status Kepegawaian',
+                'inputName' => 'analisa_employment_statuses[]',
+                'options' => $allEmploymentStatuses,
+                'selected' => $analisaEmploymentStatuses,
+            ],
+            [
+                'key' => 'pos',
+                'label' => '3. Jabatan',
+                'defaultText' => 'Semua Jabatan',
+                'inputName' => 'analisa_positions[]',
+                'options' => $allPositions,
+                'selected' => $analisaPositions,
+            ],
+        ];
+    @endphp
+    <div class="analisa-filter-card">
+        <form action="{{ route('admin.dashboard') }}" method="GET" id="analisaFilterForm">
+            <input type="hidden" name="survey_id" value="{{ $activeSurvey->id }}">
+            <input type="hidden" name="category" value="{{ $selectedCategory }}">
+            <input type="hidden" name="tab" value="analisa">
+
+            <div class="analisa-filter-header">
+                <div>
+                    <h3 style="font-size: 1rem; font-weight: 800; color: #0F172A; margin: 0; display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap;">
+                        <i class="bi bi-funnel-fill" style="color: var(--color-navy-primary);"></i>
+                        <span>Filter Analisa Dimensi</span>
+                        <span style="font-size: 0.75rem; font-weight: 700; background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE; padding: 0.15rem 0.6rem; border-radius: 9999px;">
+                            {{ $analisaRespondentCount }} dari {{ $totalFilled }} Responden
+                        </span>
+                    </h3>
+                    <p style="font-size: 0.75rem; color: #64748B; margin: 0.2rem 0 0 0;">
+                        Klik dropdown untuk memilih satu, beberapa, atau semua opsi (kosong = semua).
+                    </p>
+                </div>
+            </div>
+
+            <div class="analisa-filter-bar">
+                @foreach($analisaFilterGroups as $fg)
+                @php
+                    $selCount = count($fg['selected']);
+                    $totalOpts = count($fg['options']);
+                    if ($selCount === 0) {
+                        $triggerText = $fg['defaultText'];
+                    } elseif ($selCount === 1) {
+                        $triggerText = $fg['selected'][0];
+                    } elseif ($selCount === $totalOpts) {
+                        $triggerText = 'Semua (' . $totalOpts . ' dipilih)';
+                    } else {
+                        $triggerText = $selCount . ' dipilih (' . implode(', ', array_slice($fg['selected'], 0, 2)) . ($selCount > 2 ? ', ...' : '') . ')';
+                    }
+                @endphp
+                <div class="cb-dropdown" data-dropdown-group="{{ $fg['key'] }}" data-default-text="{{ $fg['defaultText'] }}">
+                    <span class="cb-dropdown-label">{{ $fg['label'] }}</span>
+                    <button type="button"
+                            class="cb-dropdown-trigger {{ $selCount > 0 ? 'has-selection' : '' }}"
+                            aria-expanded="false">
+                        <span class="cb-dropdown-text">{{ $triggerText }}</span>
+                        <i class="bi bi-chevron-down cb-dropdown-chevron"></i>
+                    </button>
+
+                    <div class="cb-dropdown-menu">
+                        <div class="cb-dropdown-head">
+                            <label class="filter-select-all-label">
+                                <input type="checkbox"
+                                       class="filter-select-all"
+                                       data-target="{{ $fg['key'] }}"
+                                       {{ $selCount === $totalOpts ? 'checked' : '' }}>
+                                <span>Pilih Semua</span>
+                            </label>
+                            <button type="button" class="cb-clear-btn" data-clear-group="{{ $fg['key'] }}">
+                                Hapus
+                            </button>
+                        </div>
+                        <div class="cb-dropdown-list">
+                            @foreach($fg['options'] as $opt)
+                            <label class="cb-dropdown-item">
+                                <input type="checkbox"
+                                       name="{{ $fg['inputName'] }}"
+                                       value="{{ $opt }}"
+                                       class="filter-group-item"
+                                       data-group="{{ $fg['key'] }}"
+                                       {{ in_array($opt, $fg['selected'], true) ? 'checked' : '' }}>
+                                <span>{{ $opt }}</span>
+                            </label>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+
+                <div class="analisa-filter-actions">
+                    <button type="submit"
+                            style="background: var(--color-navy-primary); color: #FFFFFF; border: none; padding: 0.6rem 1.05rem; border-radius: 10px; font-size: 0.825rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; box-shadow: 0 2px 6px rgba(12, 43, 100, 0.2); white-space: nowrap;">
+                        <i class="bi bi-check2-square"></i> Terapkan
+                    </button>
+                    @if($hasAnalisaFilter)
+                        <a href="{{ route('admin.dashboard', ['survey_id' => $activeSurvey->id, 'category' => $selectedCategory, 'tab' => 'analisa']) }}"
+                           style="background: #F1F5F9; color: #475569; border: 1px solid #CBD5E1; text-decoration: none; padding: 0.58rem 0.85rem; border-radius: 10px; font-size: 0.825rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.35rem; white-space: nowrap;">
+                            <i class="bi bi-arrow-counterclockwise"></i> Reset
+                        </a>
+                    @endif
+                </div>
+            </div>
+        </form>
+    </div>
+
+    @if($hasAnalisaFilter && $analisaRespondentCount === 0)
+    <div style="background: #FEF3C7; border: 1px solid #F59E0B; color: #92400E; padding: 0.85rem 1.1rem; border-radius: 12px; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.6rem; font-size: 0.85rem; font-weight: 600;">
+        <i class="bi bi-exclamation-triangle-fill" style="font-size: 1.1rem; color: #D97706;"></i>
+        <span>Tidak ada responden yang sesuai dengan kombinasi filter yang dipilih. Silakan ubah pilihan checkbox atau klik Reset Filter.</span>
+    </div>
+    @endif
+
     <div class="analytics-grid">
         <!-- Summary Dimension Cards -->
         <div style="min-width: 0; max-width: 100%;">
@@ -1271,6 +1618,109 @@
 @if($tab == 'analisa')
 <script>
     (function() {
+        // Dropdown Checkbox Filter Helpers (Departemen, Status Kepegawaian, Jabatan)
+        function closeAllFilterDropdowns(exceptEl = null) {
+            document.querySelectorAll('.cb-dropdown.open').forEach(dd => {
+                if (dd !== exceptEl) {
+                    dd.classList.remove('open');
+                    const trig = dd.querySelector('.cb-dropdown-trigger');
+                    if (trig) trig.setAttribute('aria-expanded', 'false');
+                }
+            });
+        }
+
+        function syncFilterGroupState(groupKey) {
+            const dropdown = document.querySelector(`.cb-dropdown[data-dropdown-group="${groupKey}"]`);
+            const items = Array.from(document.querySelectorAll(`.filter-group-item[data-group="${groupKey}"]`));
+            const selectAll = document.querySelector(`.filter-select-all[data-target="${groupKey}"]`);
+            if (!items.length || !dropdown) return;
+
+            const checkedItems = items.filter(cb => cb.checked);
+            const checkedCount = checkedItems.length;
+
+            if (selectAll) {
+                selectAll.checked = checkedCount === items.length;
+                selectAll.indeterminate = checkedCount > 0 && checkedCount < items.length;
+            }
+
+            const trigger = dropdown.querySelector('.cb-dropdown-trigger');
+            const textEl = dropdown.querySelector('.cb-dropdown-text');
+            const defaultText = dropdown.getAttribute('data-default-text') || 'Semua';
+
+            if (trigger && textEl) {
+                if (checkedCount === 0) {
+                    textEl.textContent = defaultText;
+                    trigger.classList.remove('has-selection');
+                } else if (checkedCount === 1) {
+                    textEl.textContent = checkedItems[0].value;
+                    trigger.classList.add('has-selection');
+                } else if (checkedCount === items.length) {
+                    textEl.textContent = `Semua (${items.length} dipilih)`;
+                    trigger.classList.add('has-selection');
+                } else {
+                    const preview = checkedItems.slice(0, 2).map(cb => cb.value).join(', ');
+                    textEl.textContent = `${checkedCount} dipilih (${preview}${checkedCount > 2 ? ', ...' : ''})`;
+                    trigger.classList.add('has-selection');
+                }
+            }
+        }
+
+        document.querySelectorAll('.cb-dropdown').forEach(dropdown => {
+            const trigger = dropdown.querySelector('.cb-dropdown-trigger');
+            if (!trigger) return;
+            trigger.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const willOpen = !dropdown.classList.contains('open');
+                closeAllFilterDropdowns(dropdown);
+                dropdown.classList.toggle('open', willOpen);
+                trigger.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+            });
+        });
+
+        document.querySelectorAll('.cb-dropdown-menu').forEach(menu => {
+            menu.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        });
+
+        document.addEventListener('click', function() {
+            closeAllFilterDropdowns();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeAllFilterDropdowns();
+        });
+
+        document.querySelectorAll('.filter-select-all').forEach(selectAllCb => {
+            const groupKey = selectAllCb.getAttribute('data-target');
+            if (!groupKey) return;
+            selectAllCb.addEventListener('change', function() {
+                document.querySelectorAll(`.filter-group-item[data-group="${groupKey}"]`).forEach(cb => {
+                    cb.checked = selectAllCb.checked;
+                });
+                syncFilterGroupState(groupKey);
+            });
+            syncFilterGroupState(groupKey);
+        });
+
+        document.querySelectorAll('.cb-clear-btn').forEach(clearBtn => {
+            clearBtn.addEventListener('click', function() {
+                const groupKey = this.getAttribute('data-clear-group');
+                if (!groupKey) return;
+                document.querySelectorAll(`.filter-group-item[data-group="${groupKey}"]`).forEach(cb => {
+                    cb.checked = false;
+                });
+                syncFilterGroupState(groupKey);
+            });
+        });
+
+        document.querySelectorAll('.filter-group-item').forEach(itemCb => {
+            itemCb.addEventListener('change', function() {
+                const groupKey = this.getAttribute('data-group');
+                if (groupKey) syncFilterGroupState(groupKey);
+            });
+        });
+
         const scaleMax = {{ $surveyScaleMax ?? 4 }};
         const dimLabels = @json(array_keys($dimensionScores));
         const realScores = @json(array_values($dimensionScores));

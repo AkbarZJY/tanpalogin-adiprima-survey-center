@@ -97,6 +97,18 @@ class DashboardController extends Controller
 
         $responses = $responsesQuery->paginate(10)->withQueryString();
 
+        // Standard demographic filter options (matching survey form)
+        $allDepartments = [
+            'HRGA', 'PPIC', 'QC', 'UTILITY', 'R&D',
+            'PM1', 'PM2', 'PM3', 'TEKNIK', 'PP',
+            'MRK', 'PCH', 'IT', 'FA', 'IA'
+        ];
+        $allEmploymentStatuses = ['Tetap', 'Kontrak', 'Outsourcing'];
+        $allPositions = [
+            'General Manager', 'Manager', 'Ast. Manager',
+            'Supervisor', 'Ast. Supervisor', 'Staf', 'Karu', 'Operator'
+        ];
+
         // 3. Questions list for headers and analytics
         $questions = SurveyQuestion::where('survey_id', $activeSurvey->id)
             ->with('dimensionModel')
@@ -104,36 +116,71 @@ class DashboardController extends Controller
             ->orderBy('id')
             ->get();
 
-        // 4. Rekap Perolehan (Department Participation Monitoring)
-        $departmentTargets = [
-            'Produksi' => ['target' => 150, 'depts' => ['PM1', 'PM2', 'PM3', 'TEKNIK', 'UTILITY']],
-            'Marketing' => ['target' => 30, 'depts' => ['MRK', 'PPIC']],
-            'Finance' => ['target' => 20, 'depts' => ['FA', 'PCH', 'IA']],
-            'HRGA' => ['target' => 15, 'depts' => ['HRGA', 'PP']],
-            'IT & Tech' => ['target' => 10, 'depts' => ['IT', 'R&D', 'QC']],
-        ];
+        // 4. Rekap Perolehan (Department Participation Monitoring - sesuai form)
+        $departmentCounts = SurveyResponse::where('survey_id', $activeSurvey->id)
+            ->select('department', DB::raw('COUNT(*) as total'))
+            ->groupBy('department')
+            ->pluck('total', 'department');
 
         $rekapData = [];
-        $totalTarget = 225;
+        $totalTarget = 0;
         $totalFilled = SurveyResponse::where('survey_id', $activeSurvey->id)->count();
 
-        foreach ($departmentTargets as $groupName => $info) {
-            $count = SurveyResponse::where('survey_id', $activeSurvey->id)
-                ->whereIn('department', $info['depts'])
-                ->count();
-            $target = $info['target'];
-            $pct = $target > 0 ? round(($count / $target) * 100) : 0;
+        foreach ($allDepartments as $dept) {
+            $count = (int) ($departmentCounts[$dept] ?? 0);
             $rekapData[] = [
-                'group' => $groupName,
+                'group' => $dept,
                 'filled' => $count,
-                'target' => $target,
-                'progress' => $pct,
+                'target' => 0,
+                'progress' => 0,
             ];
+        }
+
+        // Sertakan departemen lain jika ada pada data historis di luar daftar form
+        foreach ($departmentCounts as $dept => $count) {
+            if ($dept && !in_array($dept, $allDepartments, true)) {
+                $rekapData[] = [
+                    'group' => $dept,
+                    'filled' => (int) $count,
+                    'target' => 0,
+                    'progress' => 0,
+                ];
+            }
         }
 
         $overallProgressPct = $totalTarget > 0 ? round(($totalFilled / $totalTarget) * 100, 1) : 0;
 
-        // 5. Dynamic Dimension Analytics
+        // 5. Dynamic Dimension Analytics (with multi-select checkbox filters)
+        $analisaDepartments = array_values(array_intersect(
+            $allDepartments,
+            array_filter((array) $request->input('analisa_departments', []))
+        ));
+        $analisaEmploymentStatuses = array_values(array_intersect(
+            $allEmploymentStatuses,
+            array_filter((array) $request->input('analisa_employment_statuses', []))
+        ));
+        $analisaPositions = array_values(array_intersect(
+            $allPositions,
+            array_filter((array) $request->input('analisa_positions', []))
+        ));
+
+        $applyAnalisaFilters = function ($query) use ($analisaDepartments, $analisaEmploymentStatuses, $analisaPositions) {
+            if (!empty($analisaDepartments)) {
+                $query->whereIn('survey_responses.department', $analisaDepartments);
+            }
+            if (!empty($analisaEmploymentStatuses)) {
+                $query->whereIn('survey_responses.employment_status', $analisaEmploymentStatuses);
+            }
+            if (!empty($analisaPositions)) {
+                $query->whereIn('survey_responses.position', $analisaPositions);
+            }
+        };
+
+        $analisaRespondentQuery = DB::table('survey_responses')
+            ->where('survey_responses.survey_id', $activeSurvey->id);
+        $applyAnalisaFilters($analisaRespondentQuery);
+        $analisaRespondentCount = $analisaRespondentQuery->count();
+
         // Extract distinct dimensions from this survey's questions
         $surveyDimensions = $questions->pluck('dimensionName')->unique()->filter()->values()->all();
         if (empty($surveyDimensions)) {
@@ -145,10 +192,14 @@ class DashboardController extends Controller
         $dimensionGaps = [];
 
         foreach ($surveyDimensions as $dim) {
-            $stats = DB::table('survey_answers')
+            $statsQuery = DB::table('survey_answers')
                 ->join('survey_questions', 'survey_answers.question_id', '=', 'survey_questions.id')
                 ->join('survey_responses', 'survey_answers.survey_response_id', '=', 'survey_responses.id')
-                ->where('survey_responses.survey_id', $activeSurvey->id)
+                ->where('survey_responses.survey_id', $activeSurvey->id);
+
+            $applyAnalisaFilters($statsQuery);
+
+            $stats = $statsQuery
                 ->where(function ($q) use ($dim) {
                     $q->where('survey_questions.dimension', $dim)
                       ->orWhereExists(function ($sub) use ($dim) {
@@ -205,9 +256,13 @@ class DashboardController extends Controller
         }
 
         // 5b. Per-Indicator (Question) Analytics grouped by Dimension for Drill-Down & IPA Matrix
-        $questionStats = DB::table('survey_answers')
+        $questionStatsQuery = DB::table('survey_answers')
             ->join('survey_responses', 'survey_answers.survey_response_id', '=', 'survey_responses.id')
-            ->where('survey_responses.survey_id', $activeSurvey->id)
+            ->where('survey_responses.survey_id', $activeSurvey->id);
+
+        $applyAnalisaFilters($questionStatsQuery);
+
+        $questionStats = $questionStatsQuery
             ->groupBy('survey_answers.question_id')
             ->selectRaw('
                 survey_answers.question_id,
@@ -427,17 +482,6 @@ class DashboardController extends Controller
             ];
         }
 
-        // 7. Filter Options
-        $allDepartments = [
-            'HRGA', 'PPIC', 'QC', 'UTILITY', 'R&D',
-            'PM1', 'PM2', 'PM3', 'TEKNIK', 'PP',
-            'MRK', 'PCH', 'IT', 'FA', 'IA'
-        ];
-        $allPositions = [
-            'General Manager', 'Manager', 'Ast. Manager',
-            'Supervisor', 'Ast. Supervisor', 'Staf', 'Karu', 'Operator'
-        ];
-
         return view('admin.dashboard.index', compact(
             'allSurveys', 'allCategories', 'selectedCategory', 'surveysByCategory',
             'activeSurvey', 'period', 'tab', 'search', 'departmentFilter', 'positionFilter',
@@ -446,7 +490,9 @@ class DashboardController extends Controller
             'dimensionDetails', 'dimensionIpaOverview',
             'overallEngagementScore', 'overallRealScore', 'overallExpScore', 'overallGap', 'surveyScaleMax',
             'highestDimension', 'highestScore', 'lowestDimension', 'lowestScore',
-            'lowScoreReasons', 'essayAnswers', 'feedbackByQuestion', 'allDepartments', 'allPositions'
+            'lowScoreReasons', 'essayAnswers', 'feedbackByQuestion',
+            'allDepartments', 'allEmploymentStatuses', 'allPositions',
+            'analisaDepartments', 'analisaEmploymentStatuses', 'analisaPositions', 'analisaRespondentCount'
         ));
     }
 
